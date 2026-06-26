@@ -1,261 +1,204 @@
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font-sans); }
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cronograma de Estudos — Engenharia de Software</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page">
 
-  .page { padding: 1.5rem 0; }
+    <!-- Header -->
+    <header class="header">
+      <div class="eyebrow">
+        <span class="pill pill-purple">🎓 Engenharia de Software</span>
+        <span class="pill pill-teal">📅 25 Jun → 25 Jul</span>
+        <span class="pill pill-amber">📚 8 frentes de estudo</span>
+      </div>
+      <h1 class="page-title">Cronograma de <span>Estudos</span></h1>
+      <p class="page-sub">Manhã 08:00–09:30 · Noite 21:00–23:00 · Domingo a Domingo</p>
+    </header>
 
-  .header { margin-bottom: 1.5rem; }
-  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 0.75rem; }
-  .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
-  .badge-purple { background: #EEEDFE; color: #3C3489; }
-  .badge-teal { background: #E1F5EE; color: #085041; }
-  .badge-amber { background: #FAEEDA; color: #633806; }
-  .page-title { font-size: 22px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
-  .page-sub { font-size: 14px; color: var(--text-secondary); }
-
-  .section-label {
-    font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--text-muted); margin: 1.5rem 0 0.75rem; display: flex; align-items: center; gap: 8px;
-  }
-  .section-label::after { content: ''; flex: 1; height: 0.5px; background: var(--border); }
-
-  .routine-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 0.5rem; }
-  .routine-card {
-    background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px;
-    padding: 0.75rem 1rem; display: flex; align-items: flex-start; gap: 10px;
-  }
-  .routine-icon { font-size: 18px; margin-top: 1px; }
-  .routine-time { font-size: 12px; font-weight: 500; color: var(--text-accent); }
-  .routine-desc { font-size: 13px; color: var(--text-secondary); margin-top: 1px; }
-
-  .week-grid {
-    display: grid; grid-template-columns: 80px repeat(7, 1fr); gap: 6px;
-    margin-bottom: 0.5rem;
-  }
-  .week-header { font-size: 11px; font-weight: 500; color: var(--text-muted); text-align: center; padding: 4px 0; }
-  .period-label {
-    font-size: 11px; font-weight: 500; color: var(--text-muted); display: flex; align-items: center;
-    gap: 4px; padding: 4px 0;
-  }
-  .study-cell {
-    border-radius: 8px; padding: 6px 7px; font-size: 10px; font-weight: 500;
-    text-align: center; line-height: 1.35; min-height: 52px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    border: 0.5px solid transparent; cursor: default; transition: opacity 0.15s;
-  }
-  .study-cell:hover { opacity: 0.85; }
-  .cell-icon { font-size: 13px; margin-bottom: 2px; }
-
-  .c-ed   { background: #EEEDFE; color: #3C3489; border-color: #AFA9EC; }
-  .c-bd   { background: #E1F5EE; color: #085041; border-color: #5DCAA5; }
-  .c-eu   { background: #FAEEDA; color: #633806; border-color: #EF9F27; }
-  .c-rs   { background: #FAECE7; color: #712B13; border-color: #F0997B; }
-  .c-as   { background: #FBEAF0; color: #72243E; border-color: #ED93B1; }
-  .c-ai   { background: #EAF3DE; color: #27500A; border-color: #97C459; }
-  .c-dq   { background: #E6F1FB; color: #0C447C; border-color: #85B7EB; }
-  .c-rest { background: var(--surface-1); color: var(--text-muted); border-color: var(--border); }
-
-  .legend-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
-  .legend-item {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--surface-1); border: 0.5px solid var(--border);
-    border-radius: 8px; padding: 6px 10px;
-  }
-  .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-  .legend-name { font-size: 12px; color: var(--text-primary); font-weight: 500; }
-  .legend-abbr { font-size: 11px; color: var(--text-muted); margin-left: auto; }
-
-  .progress-section { margin-top: 0.5rem; }
-  .progress-row { margin-bottom: 10px; }
-  .progress-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
-  .progress-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
-  .progress-pct { font-size: 11px; color: var(--text-muted); }
-  .progress-track { height: 6px; background: var(--surface-1); border-radius: 999px; overflow: hidden; border: 0.5px solid var(--border); }
-  .progress-fill { height: 100%; border-radius: 999px; }
-
-  .tip-box {
-    background: var(--bg-accent); border: 0.5px solid var(--border-accent);
-    border-radius: 8px; padding: 0.75rem 1rem; margin-top: 0.5rem;
-    font-size: 12px; color: var(--text-secondary); display: flex; gap: 8px;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .c-ed   { background: #26215C; color: #CECBF6; border-color: #534AB7; }
-    .c-bd   { background: #04342C; color: #9FE1CB; border-color: #0F6E56; }
-    .c-eu   { background: #412402; color: #FAC775; border-color: #854F0B; }
-    .c-rs   { background: #4A1B0C; color: #F5C4B3; border-color: #993C1D; }
-    .c-as   { background: #4B1528; color: #F4C0D1; border-color: #993556; }
-    .c-ai   { background: #173404; color: #C0DD97; border-color: #3B6D11; }
-    .c-dq   { background: #042C53; color: #B5D4F4; border-color: #185FA5; }
-    .badge-purple { background: #26215C; color: #CECBF6; }
-    .badge-teal { background: #04342C; color: #9FE1CB; }
-    .badge-amber { background: #412402; color: #FAC775; }
-  }
-</style>
-
-<div class="page">
-  <h2 class="sr-only">Cronograma de estudos semanal para Engenharia de Software — de 25 de junho a 25 de julho</h2>
-
-  <div class="header">
-    <div class="badge-row">
-      <span class="badge badge-purple"><i class="ti ti-school" aria-hidden="true"></i> Engenharia de Software</span>
-      <span class="badge badge-teal"><i class="ti ti-calendar" aria-hidden="true"></i> Jun 25 → Jul 25</span>
-      <span class="badge badge-amber"><i class="ti ti-book" aria-hidden="true"></i> 8 frentes de estudo</span>
-    </div>
-    <p class="page-title">Cronograma de Estudos</p>
-    <p class="page-sub">Manhã (05:00–09:30) e Noite (21:00–23:00) · Domingo a Domingo</p>
-  </div>
-
-  <div class="section-label">rotina diária</div>
-  <div class="routine-grid">
-    <div class="routine-card">
-      <i class="ti ti-sun routine-icon" style="color: #EF9F27;" aria-hidden="true"></i>
-      <div>
+    <!-- Rotina -->
+    <div class="section-label">rotina diária</div>
+    <div class="routine-grid">
+      <div class="routine-card">
+        <div class="routine-icon">🌅</div>
         <div class="routine-time">05:00</div>
         <div class="routine-desc">Acordar</div>
       </div>
-    </div>
-    <div class="routine-card">
-      <i class="ti ti-bible routine-icon" style="color: #7C3AED;" aria-hidden="true"></i>
-      <div>
+      <div class="routine-card">
+        <div class="routine-icon">🙏</div>
         <div class="routine-time">05:15</div>
-        <div class="routine-desc">Devocional & Oração</div>
+        <div class="routine-desc">Devocional &amp; Oração</div>
       </div>
-    </div>
-    <div class="routine-card">
-      <i class="ti ti-barbell routine-icon" style="color: #1D9E75;" aria-hidden="true"></i>
-      <div>
+      <div class="routine-card">
+        <div class="routine-icon">🏋️</div>
         <div class="routine-time">06:00</div>
         <div class="routine-desc">Academia</div>
       </div>
-    </div>
-    <div class="routine-card">
-      <i class="ti ti-home routine-icon" style="color: #D85A30;" aria-hidden="true"></i>
-      <div>
+      <div class="routine-card">
+        <div class="routine-icon">🏠</div>
         <div class="routine-time">07:30</div>
         <div class="routine-desc">Casa em ordem</div>
       </div>
-    </div>
-    <div class="routine-card">
-      <i class="ti ti-book-2 routine-icon" style="color: #178AD4;" aria-hidden="true"></i>
-      <div>
+      <div class="routine-card">
+        <div class="routine-icon">📖</div>
         <div class="routine-time">08:00–09:30</div>
-        <div class="routine-desc">Estudos (manhã)</div>
+        <div class="routine-desc">Estudos — manhã</div>
       </div>
-    </div>
-    <div class="routine-card">
-      <i class="ti ti-moon routine-icon" style="color: #534AB7;" aria-hidden="true"></i>
-      <div>
+      <div class="routine-card">
+        <div class="routine-icon">🌙</div>
         <div class="routine-time">21:00–23:00</div>
-        <div class="routine-desc">Estudos (noite)</div>
+        <div class="routine-desc">Estudos — noite</div>
       </div>
     </div>
+
+    <!-- Grade semanal -->
+    <div class="section-label">grade semanal</div>
+    <div class="week-wrap">
+      <div class="week-grid">
+
+        <div></div>
+        <div class="week-header">DOM</div>
+        <div class="week-header">SEG</div>
+        <div class="week-header">TER</div>
+        <div class="week-header">QUA</div>
+        <div class="week-header">QUI</div>
+        <div class="week-header">SEX</div>
+        <div class="week-header">SÁB</div>
+
+        <!-- Manhã -->
+        <div class="period-label">☀️ Manhã</div>
+        <div class="study-cell c-ed"><div class="cell-icon">🌲</div>Estrutura<br>de Dados</div>
+        <div class="study-cell c-bd"><div class="cell-icon">🗄️</div>Banco<br>de Dados</div>
+        <div class="study-cell c-eu"><div class="cell-icon">💻</div>Eng.<br>Usabilidade</div>
+        <div class="study-cell c-rs"><div class="cell-icon">📋</div>Requisitos<br>de Sistemas</div>
+        <div class="study-cell c-as"><div class="cell-icon">🏛️</div>Arq.<br>de Sistemas</div>
+        <div class="study-cell c-ai"><div class="cell-icon">🤖</div>Bootcamp<br>AI Java</div>
+        <div class="study-cell c-dq"><div class="cell-icon">🏆</div>Dev<br>Quest</div>
+
+        <!-- Noite -->
+        <div class="period-label">🌙 Noite</div>
+        <div class="study-cell c-ai"><div class="cell-icon">🤖</div>Bootcamp<br>AI Java</div>
+        <div class="study-cell c-ed"><div class="cell-icon">🌲</div>Estrutura<br>de Dados</div>
+        <div class="study-cell c-bd"><div class="cell-icon">🗄️</div>Banco<br>de Dados</div>
+        <div class="study-cell c-eu"><div class="cell-icon">💻</div>Eng.<br>Usabilidade</div>
+        <div class="study-cell c-rs"><div class="cell-icon">📋</div>Requisitos<br>de Sistemas</div>
+        <div class="study-cell c-as"><div class="cell-icon">🏛️</div>Arq.<br>de Sistemas</div>
+        <div class="study-cell c-dq"><div class="cell-icon">🏆</div>Dev<br>Quest</div>
+
+      </div>
+    </div>
+
+    <!-- Legenda -->
+    <div class="section-label">legenda</div>
+    <div class="legend-grid">
+      <div class="legend-item">
+        <div class="legend-dot dot-ed"></div>
+        <span class="legend-name">Estrutura de Dados</span>
+        <span class="legend-abbr">ED</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot dot-bd"></div>
+        <span class="legend-name">Banco de Dados</span>
+        <span class="legend-abbr">BD</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot dot-eu"></div>
+        <span class="legend-name">Eng. de Usabilidade</span>
+        <span class="legend-abbr">EU</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot dot-rs"></div>
+        <span class="legend-name">Requisitos de Sistemas</span>
+        <span class="legend-abbr">RS</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot dot-as"></div>
+        <span class="legend-name">Arquitetura de Sistemas</span>
+        <span class="legend-abbr">AS</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot dot-ai"></div>
+        <span class="legend-name">Bootcamp AI Java Back-end</span>
+        <span class="legend-abbr">AI</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot dot-dq"></div>
+        <span class="legend-name">Dev Quest</span>
+        <span class="legend-abbr">DQ</span>
+      </div>
+    </div>
+
+    <!-- Carga horária -->
+    <div class="section-label">carga horária estimada (até 25/jul)</div>
+
+    <div class="progress-row">
+      <div class="progress-top">
+        <span class="progress-name">Estrutura de Dados</span>
+        <span class="progress-pct">~18h — 2 sessões/semana</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill fill-ed" style="width:100%;"></div></div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-top">
+        <span class="progress-name">Banco de Dados</span>
+        <span class="progress-pct">~9h — 1 sessão/semana</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill fill-bd" style="width:50%;"></div></div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-top">
+        <span class="progress-name">Engenharia de Usabilidade</span>
+        <span class="progress-pct">~9h — 1 sessão/semana</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill fill-eu" style="width:50%;"></div></div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-top">
+        <span class="progress-name">Requisitos de Sistemas</span>
+        <span class="progress-pct">~9h — 1 sessão/semana</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill fill-rs" style="width:50%;"></div></div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-top">
+        <span class="progress-name">Arquitetura de Sistemas</span>
+        <span class="progress-pct">~9h — 1 sessão/semana</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill fill-as" style="width:50%;"></div></div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-top">
+        <span class="progress-name">Bootcamp AI Java Back-end</span>
+        <span class="progress-pct">~18h — 2 sessões/semana</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill fill-ai" style="width:100%;"></div></div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-top">
+        <span class="progress-name">Dev Quest</span>
+        <span class="progress-pct">~18h — 2 sessões/semana</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill fill-dq" style="width:100%;"></div></div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-icon">💡</div>
+      <div>Estrutura de Dados tem dois slots semanais por ser a matéria mais pesada. Bootcamp AI Java e Dev Quest também têm dois slots cada, pois exigem prática contínua de código. Cada sessão corresponde a aproximadamente 1h30 de estudo focado.</div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span class="footer-text">Engenharia de Software · Cronograma pessoal de estudos</span>
+      <span class="deadline-badge">⏰ Prazo: 25 de julho</span>
+    </footer>
+
   </div>
-
-  <div class="section-label">grade semanal</div>
-
-  <div class="week-grid">
-    <div></div>
-    <div class="week-header">DOM</div>
-    <div class="week-header">SEG</div>
-    <div class="week-header">TER</div>
-    <div class="week-header">QUA</div>
-    <div class="week-header">QUI</div>
-    <div class="week-header">SEX</div>
-    <div class="week-header">SÁB</div>
-
-    <div class="period-label"><i class="ti ti-sun" aria-hidden="true" style="font-size:12px;"></i> Manhã</div>
-    <div class="study-cell c-ed"><i class="ti ti-binary-tree cell-icon" aria-hidden="true"></i>Estrutura de Dados</div>
-    <div class="study-cell c-bd"><i class="ti ti-database cell-icon" aria-hidden="true"></i>Banco de Dados</div>
-    <div class="study-cell c-eu"><i class="ti ti-device-laptop cell-icon" aria-hidden="true"></i>Eng. Usabilidade</div>
-    <div class="study-cell c-rs"><i class="ti ti-list-check cell-icon" aria-hidden="true"></i>Requisitos de Sistemas</div>
-    <div class="study-cell c-as"><i class="ti ti-building-arch cell-icon" aria-hidden="true"></i>Arq. de Sistemas</div>
-    <div class="study-cell c-ai"><i class="ti ti-brain cell-icon" aria-hidden="true"></i>Bootcamp AI Java</div>
-    <div class="study-cell c-dq"><i class="ti ti-trophy cell-icon" aria-hidden="true"></i>Dev Quest</div>
-
-    <div class="period-label"><i class="ti ti-moon" aria-hidden="true" style="font-size:12px;"></i> Noite</div>
-    <div class="study-cell c-ai"><i class="ti ti-brain cell-icon" aria-hidden="true"></i>Bootcamp AI Java</div>
-    <div class="study-cell c-ed"><i class="ti ti-binary-tree cell-icon" aria-hidden="true"></i>Estrutura de Dados</div>
-    <div class="study-cell c-bd"><i class="ti ti-database cell-icon" aria-hidden="true"></i>Banco de Dados</div>
-    <div class="study-cell c-eu"><i class="ti ti-device-laptop cell-icon" aria-hidden="true"></i>Eng. Usabilidade</div>
-    <div class="study-cell c-rs"><i class="ti ti-list-check cell-icon" aria-hidden="true"></i>Requisitos de Sistemas</div>
-    <div class="study-cell c-as"><i class="ti ti-building-arch cell-icon" aria-hidden="true"></i>Arq. de Sistemas</div>
-    <div class="study-cell c-dq"><i class="ti ti-trophy cell-icon" aria-hidden="true"></i>Dev Quest</div>
-  </div>
-
-  <div class="section-label">legenda</div>
-  <div class="legend-grid">
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#7F77DD;"></div>
-      <span class="legend-name">Estrutura de Dados</span>
-      <span class="legend-abbr">ED</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#1D9E75;"></div>
-      <span class="legend-name">Banco de Dados</span>
-      <span class="legend-abbr">BD</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#EF9F27;"></div>
-      <span class="legend-name">Eng. de Usabilidade</span>
-      <span class="legend-abbr">EU</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#D85A30;"></div>
-      <span class="legend-name">Requisitos de Sistemas</span>
-      <span class="legend-abbr">RS</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#D4537E;"></div>
-      <span class="legend-name">Arquitetura de Sistemas</span>
-      <span class="legend-abbr">AS</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#639922;"></div>
-      <span class="legend-name">Bootcamp AI Java Back-end</span>
-      <span class="legend-abbr">AI</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#378ADD;"></div>
-      <span class="legend-name">Dev Quest</span>
-      <span class="legend-abbr">DQ</span>
-    </div>
-  </div>
-
-  <div class="section-label">carga horária estimada (até 25/jul)</div>
-  <div class="progress-section">
-    <div class="progress-row">
-      <div class="progress-top"><span class="progress-name">Estrutura de Dados</span><span class="progress-pct">~18h disponíveis</span></div>
-      <div class="progress-track"><div class="progress-fill" style="width:100%;background:#7F77DD;"></div></div>
-    </div>
-    <div class="progress-row">
-      <div class="progress-top"><span class="progress-name">Banco de Dados</span><span class="progress-pct">~9h disponíveis</span></div>
-      <div class="progress-track"><div class="progress-fill" style="width:50%;background:#1D9E75;"></div></div>
-    </div>
-    <div class="progress-row">
-      <div class="progress-top"><span class="progress-name">Engenharia de Usabilidade</span><span class="progress-pct">~9h disponíveis</span></div>
-      <div class="progress-track"><div class="progress-fill" style="width:50%;background:#EF9F27;"></div></div>
-    </div>
-    <div class="progress-row">
-      <div class="progress-top"><span class="progress-name">Requisitos de Sistemas</span><span class="progress-pct">~9h disponíveis</span></div>
-      <div class="progress-track"><div class="progress-fill" style="width:50%;background:#D85A30;"></div></div>
-    </div>
-    <div class="progress-row">
-      <div class="progress-top"><span class="progress-name">Arquitetura de Sistemas</span><span class="progress-pct">~9h disponíveis</span></div>
-      <div class="progress-track"><div class="progress-fill" style="width:50%;background:#D4537E;"></div></div>
-    </div>
-    <div class="progress-row">
-      <div class="progress-top"><span class="progress-name">Bootcamp AI Java Back-end</span><span class="progress-pct">~18h disponíveis</span></div>
-      <div class="progress-track"><div class="progress-fill" style="width:100%;background:#639922;"></div></div>
-    </div>
-    <div class="progress-row">
-      <div class="progress-top"><span class="progress-name">Dev Quest</span><span class="progress-pct">~18h disponíveis</span></div>
-      <div class="progress-track"><div class="progress-fill" style="width:100%;background:#378ADD;"></div></div>
-    </div>
-  </div>
-
-  <div class="tip-box">
-    <i class="ti ti-info-circle" aria-hidden="true" style="font-size:16px;color:var(--text-accent);flex-shrink:0;margin-top:1px;"></i>
-    <span>Estrutura de Dados aparece manhã (dom) + noite (seg) por ser a matéria mais pesada. Bootcamp AI Java e Dev Quest têm dois slots semanais por exigirem prática contínua. Cada sessão = ~1h30 de estudo focado.</span>
-  </div>
-</div>
+</body>
+</html>
